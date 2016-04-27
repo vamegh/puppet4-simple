@@ -1,0 +1,61 @@
+---
+
+base_packages:
+  ack:
+    ensure: installed
+  bind-utils:
+    ensure: installed
+  crontabs:
+    ensure: installed
+  curl:
+    ensure: installed
+  dstat:
+    ensure: installed
+  jq:
+    ensure: installed
+  iptables:
+    ensure: installed
+  lsof:
+    ensure: installed
+  mtr:
+    ensure: installed
+  nc:
+    ensure: installed
+  openssh-clients:
+    ensure: installed
+  parted:
+    ensure: installed
+  pv:
+    ensure: installed
+  perl-libwww-perl:
+    ensure: installed
+  rsync:
+    ensure: installed
+  screen:
+    ensure: installed
+  sharutils:
+    ensure: installed
+  strace:
+    ensure: installed
+  sysstat:
+    ensure: installed
+  tar:
+    ensure: installed
+  tcpdump:
+    ensure: installed
+  tcptraceroute:
+    ensure: installed
+  telnet:
+    ensure: installed
+  tmux:
+    ensure: installed
+  traceroute:
+    ensure: installed
+  vim-enhanced:
+    ensure: installed
+  wget:
+    ensure: installed
+  yum-utils:
+    ensure: installed
+  zsh:
+    ensure: installed

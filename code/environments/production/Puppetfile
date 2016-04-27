@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+# use dependencies defined in metadata.json
+# metadata
+
+# use dependencies defined in Modulefile
+# modulefile
+
+forge "https://forgeapi.puppetlabs.com"
+
+## official modules from puppetlabs
+mod 'puppetlabs-firewall',
+  :git => 'https://github.com/puppetlabs/puppetlabs-firewall'
+
+mod 'puppetlabs-mysql',
+  :git => 'https://github.com/puppetlabs/puppetlabs-mysql'
+
+mod 'puppetlabs-tomcat',
+  :git => 'https://github.com/puppetlabs/puppetlabs-tomcat'
+
+## other user modules
+mod 'jfryman-nginx',
+  :git => 'https://github.com/jfryman/puppet-nginx'
+
+mod 'saz-sudo',
+  :git => 'https://github.com/saz/puppet-sudo'
+
+mod 'vamegh-generic_tools',
+  :git => 'https://github.com/vamegh/generic_tools'
+
+

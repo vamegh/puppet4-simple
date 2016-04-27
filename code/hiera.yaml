@@ -1,0 +1,23 @@
+---
+:backends:
+- yaml
+
+:yaml:
+  :datadir: "/etc/puppetlabs/code/environments/%{::environment}/hieradata"
+
+:hierarchy:
+
+  # Default generic settings applicable to everything
+  - "role.%{::ev9_role}"
+  - "%{::domain}"
+  - "%{::fqdn}"
+  - 'groups'
+  - "hw.%{::ev9_plat}"
+  - 'packages'
+  - 'services'
+  - 'paths'
+  - 'ports'
+  - 'users'
+  - 'base_firewall'
+  - 'base'
+

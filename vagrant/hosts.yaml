@@ -1,0 +1,26 @@
+---
+
+# Define the hosts we want to build (options are pretty self explanitory but enumerated below)
+#   name         = vagrant name of host e.g. vagrant up challenge
+#   hostname     = hostname that is assigned to the running vm
+#   ip           = the network address of the given node
+#   memory       = how much ram to assign the node
+#   cpu          = how many cpu's to assign to the node
+#   box          = what basebox to use to build the vm
+#   port_forward = an array of maps that enumerate all required port bindings from guest to host
+#
+# forwarded_ports = {'80' => '18080', '8000' => '8000', '1234' => '1234'
+
+- :name: 'simple'
+  :hostname: 'simple.test'
+  :ip: '192.168.100.10'
+  :memory: "1024"
+  :cpu: "2"
+  :box: 'puppetlabs/centos-7.0-64-nocm'
+  :plat: 'virtualbox'
+  :port_forward:
+  - :guest: "80"
+    :host: "8000"
+  - :guest: "8080"
+    :host: "8080"
+

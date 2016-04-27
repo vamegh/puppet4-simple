@@ -1,0 +1,105 @@
+---
+
+server-role: "roles::simple"
+
+hzm::version: "3.5.5"
+
+tomcat::install_from_source: false
+
+tomcat_install:
+  hzm:
+    install_from_source: false
+    package_ensure: 'installed'
+    package_name: 'tomcat'
+
+
+tomcat_instance:
+  hzm:
+    package_name: 'tomcat'
+    manage_service: false
+    package_ensure: 'installed'
+
+tomcat_service:
+  hzm:
+    use_jsvc: false
+    use_init: true
+    service_name: tomcat
+
+tomcat_war:
+  mancenter-%{::hzm::version}.war:
+    catalina_base: '/usr/share/tomcat'
+    #app_base: 'webapps'
+    war_source: "http://www.ev9.io/mancenter-%{::hzm::version}.war"
+
+tomcat_server:
+  hzm:
+    catalina_base: '/usr/share/tomcat'
+    port: '8005'
+
+tomcat_connector:
+  hzm:
+    catalina_base: '/usr/share/tomcat'
+    port: 8080
+    protocol: 'HTTP/1.1'
+
+tomcat_context:
+  mancenter-%{::hzm::version}:
+    doc_base: 'mancenter-%{::hzm::version}'
+    parent_service: 'Catalina'
+    server_config: '/etc/tomcat/server.xml'
+    additional_attributes:
+      path: ""
+
+nginx::nginx_vhosts:
+  'mancenter1':
+    proxy: "http://localhost:8080"
+
+ip_rules:
+  '0010 TCP WEB INPUT JUMP':
+    proto:    'tcp'
+    state:    'NEW'
+    jump:     'WEB'
+    chain:    'INPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0011 TCP WEB OUTPUT JUMP':
+    proto:    'tcp'
+    state:    'NEW'
+    jump:     'WEB'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0012 TCP MYSQL OUTPUT JUMP':
+    proto:    'tcp'
+    state:    'NEW'
+    jump:     'MYSQL_OUT'
+    dport:    '3306'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0200 CHAIN WEB':
+    proto:  'tcp'
+    state:  'NEW'
+    chain:  'WEB'
+    dport:
+      - '80'
+      - '8000'
+      - '8080'
+      - '443'
+    action: 'accept'
+  '0201 CHAIN MYSQL_OUT':
+    chain:  'MYSQL_OUT'
+    state:  'NEW'
+    proto:  'tcp'
+    destination: '127.0.0.1'
+    dport:  '3306'
+    action: 'accept'
+
+ip_pre_chains:
+  WEB:filter:IPv4:
+    purge: true
+    ensure: present
+  MYSQL_OUT:filter:IPv4:
+    purge: true
+    ensure: present
+

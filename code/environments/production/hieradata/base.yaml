@@ -1,0 +1,21 @@
+---
+profile-role: "roles::base"
+
+#environment_variables:
+env_vars:
+  01-EDITOR:
+    env_name: "EDITOR"
+    env_file: "01-environment.sh"
+    value: '/usr/bin/vim'
+    set_facter: true
+    order: '11'
+
+## sudo configs
+sudo::configs:
+  requiretty:
+    content: "Defaults !requiretty"
+    priority: 10
+  sysadmin:
+    content: '%wheel ALL=(ALL) PASSWD: ALL'
+    priority: 20
+

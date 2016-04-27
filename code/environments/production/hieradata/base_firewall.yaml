@@ -1,0 +1,252 @@
+---
+
+ip_rules:
+  '0000 TCP STATEFUL IN JUMP':
+    proto:    'all'
+    jump:     'STATEFUL'
+    chain:    'INPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0001 TCP STATEFUL OUT JUMP':
+    proto:    'all'
+    jump:     'STATEFUL'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0002 ALL LOOP IN JUMP':
+    proto:    'all'
+    jump:     'LOOP'
+    state:    'NEW'
+    chain:    'INPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0003 ALL LOOP OUT JUMP':
+    proto:    'all'
+    jump:     'LOOP'
+    state:    'NEW'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0004 TCP SSHSCAN INPUT JUMP':
+    proto:    'tcp'
+    state:    'NEW'
+    dport:
+      - '22'
+      - '2222'
+      - '2200'
+    jump:     'SSHSCAN'
+    chain:    'INPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0005 UDP NTP OUTPUT JUMP':
+    proto:    'udp'
+    state:    'NEW'
+    jump:     'NTP'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0006 TCP DNS INPUT JUMP':
+    proto:    'tcp'
+    state:    'NEW'
+    jump:     'DNS'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0007 UDP DNS OUTPUT JUMP':
+    proto:    'udp'
+    state:    'NEW'
+    jump:     'DNS'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0098 DUMP INPUT JUMP':
+    proto:    'all'
+    jump:     'DUMP'
+    chain:    'INPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0099 DUMP OUTPUT JUMP':
+    proto:    'all'
+    jump:     'DUMP'
+    chain:    'OUTPUT'
+    table:    'filter'
+    provider: 'iptables'
+  '0100 CHAIN STATEFUL':
+    chain:  'STATEFUL'
+    state:
+      - 'RELATED'
+      - 'ESTABLISHED'
+    proto:  'tcp'
+    action: 'accept'
+  '0101 CHAIN STATEFUL':
+    chain:  'STATEFUL'
+    state:
+      - 'RELATED'
+      - 'ESTABLISHED'
+    proto:  'udp'
+    action: 'accept'
+  '0102 CHAIN LOOP':
+    chain:  'LOOP'
+    state:  'NEW'
+    proto:  'all'
+    iniface: 'lo'
+    action: 'accept'
+  '0103 CHAIN DNS':
+    chain:  'DNS'
+    state:  'NEW'
+    proto:  'udp'
+    dport:  '53'
+    action: 'accept'
+  '0104 CHAIN DNS':
+    chain:  'DNS'
+    state:  'NEW'
+    proto:  'tcp'
+    dport:  '53'
+    action: 'accept'
+  '0110 CHAIN SSHSCAN':
+    chain: 'SSHSCAN'
+    state: 'NEW'
+    proto: 'tcp'
+    jump: 'LOG'
+    log_level: 3
+    log_prefix: " --SSH-CONNECTION-IN-- "
+  '0111 CHAIN SSHSCAN FLAG ATTEMPT':
+    chain:    'SSHSCAN'
+    state:    'NEW'
+    proto:    'tcp'
+    recent:   'set'
+    rname:    'SSHCONN'
+    rsource:  'true'
+  '0112 CHAIN SSHSCAN CHECK IP / PORT via SSH_IN CHAIN':
+    chain:    'SSHSCAN'
+    state:    'NEW'
+    proto:    'tcp'
+    jump:     'SSH_IN'
+  '0113 CHAIN SSHSCAN LOG ATTACK':
+    chain:    'SSHSCAN'
+    state:    'NEW'
+    proto:    'tcp'
+    recent:   'update'
+    rname:    'SSHCONN'
+    rhitcount:   '20'
+    rseconds: '300'
+    rttl:     'true'
+    rsource:  'true'
+    jump:     'LOG'
+    log_prefix: ' --SSH-BRUTE-FORCE-ATTEMPT-- '
+  '0114 CHAIN SSHSCAN DUMP ATTACK TRAFFIC':
+    chain:    'SSHSCAN'
+    state:    'NEW'
+    proto:    'tcp'
+    recent:   'update'
+    rname:    'SSHCONN'
+    rhitcount:   '20'
+    rseconds: '300'
+    rttl:     'true'
+    rsource:  'true'
+    action:   'drop'
+  '0115 CHAIN SSH_IN':
+    chain:    'SSH_IN'
+    state:    'NEW'
+    proto:    'tcp'
+    source:   '192.168.100.0/24'
+    dport:
+      - '22'
+      - '2222'
+      - '2200'
+    action:   'accept'
+  '0116 CHAIN SSH_IN':
+    chain:    'SSH_IN'
+    state:    'NEW'
+    proto:    'tcp'
+    source:   '10.0.2.0/24'
+    dport:
+      - '22'
+      - '2222'
+      - '2200'
+    action:   'accept'
+  '0117 CHAIN SSH_IN':
+    chain:    'SSH_IN'
+    state:    'NEW'
+    proto:    'tcp'
+    source:   '127.0.0.1/32'
+    dport:
+      - '22'
+      - '2222'
+      - '2200'
+    action:   'accept'
+  '0120 CHAIN NTP':
+    chain:  'NTP'
+    state:  'NEW'
+    proto:  'udp'
+    dport: '123'
+    action: 'accept'
+  '0996 CHAIN DUMP TCP LOG':
+    chain:  'DUMP'
+    proto:  'tcp'
+    jump:   'LOG'
+    log_level: '3'
+    log_prefix: ' --DUMP-TCP-DROP-- '
+  '0997 CHAIN DUMP UDP LOG':
+    chain:  'DUMP'
+    proto:  'udp'
+    jump:   'LOG'
+    log_level: '3'
+    log_prefix: ' --DUMP-UDP-DROP-- '
+  '0998 CHAIN DUMP ANYTHING ELSE LOG':
+    chain:  'DUMP'
+    proto:  'all'
+    jump:   'LOG'
+    log_level: '3'
+    log_prefix: ' --DUMP-EVERYTHING-ELSE-DROP-- '
+  '0999 CHAIN DUMP : YOUR NAMES NOT DOWN YOUR NOT COMING IN':
+    chain:  'DUMP'
+    proto:  'all'
+    action: 'drop'
+
+ip_pre_chains:
+  DNS:filter:IPv4:
+    purge: true
+    ensure: present
+  DUMP:filter:IPv4:
+    purge: true
+    ensure: present
+  LOOP:filter:IPv4:
+    purge: true
+    ensure: present
+  NTP:filter:IPv4:
+    purge: true
+    ensure: present
+  SSH_IN:filter:IPv4:
+    purge: true
+    ensure: present
+  SSHSCAN:filter:IPv4:
+    purge: true
+    ensure: present
+  STATEFUL:filter:IPv4:
+    purge: true
+    ensure: present
+  WEB:filter:IPv4:
+    purge: true
+    ensure: present
+
+ip_post_chains:
+  INPUT:filter:IPv6:
+    purge: true
+    policy: 'drop'
+  OUTPUT:filter:IPv6:
+    purge: true
+    policy: 'drop'
+  FORWARD:filter:IPv6:
+    purge: true
+    policy: 'drop'
+  INPUT_FILTER_DENY:
+    name : 'INPUT:filter:IPv4'
+    policy: 'drop'
+  OUTPUT_FILTER_DENY:
+    name: 'OUTPUT:filter:IPv4'
+    policy: 'drop'
+  FORWARD_FILTER_DENY:
+    name: 'FORWARD:filter:IPv4'
+    policy: 'drop'
+
